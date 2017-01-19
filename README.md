@@ -12,3 +12,4 @@ This was developed/migrated in JHipster from the base codebase referred in the b
 
 With this project as a baseline, Idea is to use JHIPSTER provided framework using Spring cloud to migrate existing monolith into micro-services application.
 
+Instead of RabbitMQ, activeMQ is used for messaging...
