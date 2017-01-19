@@ -30,11 +30,11 @@ public class SearchFlight implements Serializable {
     @Column(name = "flight_date")
     private String flightDate;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(unique = true)
     private SearchFares sFlightFare;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(unique = true)
     private SearchInventory sFlightInv;
 

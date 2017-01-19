@@ -1,7 +1,9 @@
 package com.bfa.app.service.impl;
 
 import com.bfa.app.service.SearchFlightService;
+import com.bfa.app.domain.SearchFares;
 import com.bfa.app.domain.SearchFlight;
+import com.bfa.app.domain.SearchInventory;
 import com.bfa.app.repository.SearchFlightRepository;
 import com.bfa.app.service.dto.SearchFlightDTO;
 import com.bfa.app.service.mapper.SearchFlightMapper;
@@ -11,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,66 +24,104 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional
-public class SearchFlightServiceImpl implements SearchFlightService{
+public class SearchFlightServiceImpl implements SearchFlightService {
 
-    private final Logger log = LoggerFactory.getLogger(SearchFlightServiceImpl.class);
-    
-    @Inject
-    private SearchFlightRepository searchFlightRepository;
+	private final Logger log = LoggerFactory.getLogger(SearchFlightServiceImpl.class);
 
-    @Inject
-    private SearchFlightMapper searchFlightMapper;
+	@Inject
+	private SearchFlightRepository searchFlightRepository;
 
-    /**
-     * Save a searchFlight.
-     *
-     * @param searchFlightDTO the entity to save
-     * @return the persisted entity
-     */
-    public SearchFlightDTO save(SearchFlightDTO searchFlightDTO) {
-        log.debug("Request to save SearchFlight : {}", searchFlightDTO);
-        SearchFlight searchFlight = searchFlightMapper.searchFlightDTOToSearchFlight(searchFlightDTO);
-        searchFlight = searchFlightRepository.save(searchFlight);
-        SearchFlightDTO result = searchFlightMapper.searchFlightToSearchFlightDTO(searchFlight);
-        return result;
-    }
+	@Inject
+	private SearchFlightMapper searchFlightMapper;
 
-    /**
-     *  Get all the searchFlights.
-     *  
-     *  @return the list of entities
-     */
-    @Transactional(readOnly = true) 
-    public List<SearchFlightDTO> findAll() {
-        log.debug("Request to get all SearchFlights");
-        List<SearchFlightDTO> result = searchFlightRepository.findAll().stream()
-            .map(searchFlightMapper::searchFlightToSearchFlightDTO)
-            .collect(Collectors.toCollection(LinkedList::new));
+	/**
+	 * Save a searchFlight.
+	 *
+	 * @param searchFlightDTO
+	 *            the entity to save
+	 * @return the persisted entity
+	 */
+	public SearchFlightDTO save(SearchFlightDTO searchFlightDTO) {
+		log.debug("Request to save SearchFlight : {}", searchFlightDTO);
+		SearchFlight searchFlight = searchFlightMapper.searchFlightDTOToSearchFlight(searchFlightDTO);
+		searchFlight = searchFlightRepository.save(searchFlight);
+		SearchFlightDTO result = searchFlightMapper.searchFlightToSearchFlightDTO(searchFlight);
+		return result;
+	}
 
-        return result;
-    }
+	/**
+	 * Get all the searchFlights.
+	 * 
+	 * @return the list of entities
+	 */
+	@Transactional(readOnly = true)
+	public List<SearchFlightDTO> findAll() {
+		log.debug("Request to get all SearchFlights");
+		List<SearchFlightDTO> result = searchFlightRepository.findAll().stream()
+				.map(searchFlightMapper::searchFlightToSearchFlightDTO)
+				.collect(Collectors.toCollection(LinkedList::new));
 
-    /**
-     *  Get one searchFlight by id.
-     *
-     *  @param id the id of the entity
-     *  @return the entity
-     */
-    @Transactional(readOnly = true) 
-    public SearchFlightDTO findOne(Long id) {
-        log.debug("Request to get SearchFlight : {}", id);
-        SearchFlight searchFlight = searchFlightRepository.findOne(id);
-        SearchFlightDTO searchFlightDTO = searchFlightMapper.searchFlightToSearchFlightDTO(searchFlight);
-        return searchFlightDTO;
-    }
+		return result;
+	}
 
-    /**
-     *  Delete the  searchFlight by id.
-     *
-     *  @param id the id of the entity
-     */
-    public void delete(Long id) {
-        log.debug("Request to delete SearchFlight : {}", id);
-        searchFlightRepository.delete(id);
-    }
+	/**
+	 * Get one searchFlight by id.
+	 *
+	 * @param id
+	 *            the id of the entity
+	 * @return the entity
+	 */
+	@Transactional(readOnly = true)
+	public SearchFlightDTO findOne(Long id) {
+		log.debug("Request to get SearchFlight : {}", id);
+		SearchFlight searchFlight = searchFlightRepository.findOne(id);
+		SearchFlightDTO searchFlightDTO = searchFlightMapper.searchFlightToSearchFlightDTO(searchFlight);
+		return searchFlightDTO;
+	}
+
+	/**
+	 * Delete the searchFlight by id.
+	 *
+	 * @param id
+	 *            the id of the entity
+	 */
+	public void delete(Long id) {
+		log.debug("Request to delete SearchFlight : {}", id);
+		searchFlightRepository.delete(id);
+	}
+
+	/**
+	 * Initalize initial flight database.
+	 */
+	@Override
+	public List<SearchFlightDTO> init(List<SearchFlightDTO> flights) {
+
+		List<SearchFlight> fList = searchFlightRepository.findAll();
+
+		// Populate only for the first time.
+		if (fList != null && fList.size() == 0) {
+
+			for (Iterator iterator = flights.iterator(); iterator.hasNext();) {
+				SearchFlightDTO searchFlightDTO = (SearchFlightDTO) iterator.next();
+
+				SearchFlight searchFlight = searchFlightMapper.searchFlightDTOToSearchFlight(searchFlightDTO);
+				SearchFares sFares = new SearchFares();
+				sFares.setFare(searchFlightDTO.getFare() + "");
+				sFares.setCurrency("USD");
+				searchFlight.setSFlightFare(sFares);
+
+				SearchInventory sI = new SearchInventory();
+				sI.setCount(Integer.parseInt(searchFlightDTO.getInventory() + ""));
+				searchFlight.setSFlightInv(sI);
+
+				searchFlight = searchFlightRepository.save(searchFlight);
+
+				searchFlightDTO.setId(searchFlight.getId());
+
+			}
+
+		}
+
+		return flights;
+	}
 }

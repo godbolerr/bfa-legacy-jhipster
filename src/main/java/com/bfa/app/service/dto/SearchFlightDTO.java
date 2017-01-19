@@ -21,10 +21,9 @@ public class SearchFlightDTO implements Serializable {
 
     private String flightDate;
 
-
-    private Long sFlightFareId;
+    private Long fare;
     
-    private Long sFlightInvId;
+    private Long inventory;
     
     public Long getId() {
         return id;
@@ -62,23 +61,36 @@ public class SearchFlightDTO implements Serializable {
         this.flightDate = flightDate;
     }
 
-    public Long getSFlightFareId() {
-        return sFlightFareId;
-    }
 
-    public void setSFlightFareId(Long searchFaresId) {
-        this.sFlightFareId = searchFaresId;
-    }
+    /**
+	 * @return the fare
+	 */
+	public Long getFare() {
+		return fare;
+	}
 
-    public Long getSFlightInvId() {
-        return sFlightInvId;
-    }
+	/**
+	 * @param fare the fare to set
+	 */
+	public void setFare(Long fare) {
+		this.fare = fare;
+	}
 
-    public void setSFlightInvId(Long searchInventoryId) {
-        this.sFlightInvId = searchInventoryId;
-    }
+	/**
+	 * @return the inventory
+	 */
+	public Long getInventory() {
+		return inventory;
+	}
 
-    @Override
+	/**
+	 * @param inventory the inventory to set
+	 */
+	public void setInventory(Long inventory) {
+		this.inventory = inventory;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

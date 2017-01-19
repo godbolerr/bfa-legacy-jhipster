@@ -7,6 +7,9 @@ import java.util.List;
  * Service Interface for managing SearchFlight.
  */
 public interface SearchFlightService {
+	
+	
+	List<SearchFlightDTO> init(List<SearchFlightDTO> flights);
 
     /**
      * Save a searchFlight.
