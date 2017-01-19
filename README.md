@@ -3,6 +3,8 @@
 TODO
 
 1. Change POST call to GET call for find flights
+2. User management and entity genearation on the client side could have been disabled during the base project generation but hidden out from the UI from simplicity.
+
 
 Monotith application for a Aireline passenger booking site. 
 
