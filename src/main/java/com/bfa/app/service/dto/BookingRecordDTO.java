@@ -27,7 +27,8 @@ public class BookingRecordDTO implements Serializable {
     private String fare;
 
     private String status;
-
+    
+    private PassengerDTO pdto;
 
     public Long getId() {
         return id;
@@ -85,8 +86,24 @@ public class BookingRecordDTO implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+    
+    
 
-    @Override
+    /**
+	 * @return the pdto
+	 */
+	public PassengerDTO getPdto() {
+		return pdto;
+	}
+
+	/**
+	 * @param pdto the pdto to set
+	 */
+	public void setPdto(PassengerDTO pdto) {
+		this.pdto = pdto;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

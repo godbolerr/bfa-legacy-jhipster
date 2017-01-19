@@ -13,13 +13,13 @@ import java.util.List;
 public interface PassengerMapper {
 
     @Mapping(source = "bookingRecord.id", target = "bookingRecordId")
-    @Mapping(source = "psrBook.id", target = "psrBookId")
+   
     PassengerDTO passengerToPassengerDTO(Passenger passenger);
 
     List<PassengerDTO> passengersToPassengerDTOs(List<Passenger> passengers);
 
     @Mapping(source = "bookingRecordId", target = "bookingRecord")
-    @Mapping(source = "psrBookId", target = "psrBook")
+   
     Passenger passengerDTOToPassenger(PassengerDTO passengerDTO);
 
     List<Passenger> passengerDTOsToPassengers(List<PassengerDTO> passengerDTOs);

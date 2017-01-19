@@ -1,9 +1,18 @@
 package com.bfa.app.domain;
 
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * A Passenger.
@@ -28,10 +37,9 @@ public class Passenger implements Serializable {
     private String gender;
 
     @ManyToOne
+    @JsonIgnore
     private BookingRecord bookingRecord;
 
-    @ManyToOne
-    private BookingRecord psrBook;
 
     public Long getId() {
         return id;
@@ -93,18 +101,6 @@ public class Passenger implements Serializable {
         this.bookingRecord = bookingRecord;
     }
 
-    public BookingRecord getPsrBook() {
-        return psrBook;
-    }
-
-    public Passenger psrBook(BookingRecord bookingRecord) {
-        this.psrBook = bookingRecord;
-        return this;
-    }
-
-    public void setPsrBook(BookingRecord bookingRecord) {
-        this.psrBook = bookingRecord;
-    }
 
     @Override
     public boolean equals(Object o) {

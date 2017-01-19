@@ -39,9 +39,9 @@
     				"bookingDate" : vm.bookingInfo.flightDate ,
     				"fare":vm.bookingInfo.fare,
     				"status":"Active",
-    				"bookPsrs":[
+    				"pdto":
     				    {"firstName":vm.bookingInfo.firstName, "lastName":vm.bookingInfo.lastName,"gender":vm.bookingInfo.gender}
-    				]
+    				
     			};
 
     			return $http

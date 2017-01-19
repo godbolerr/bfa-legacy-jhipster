@@ -43,8 +43,7 @@ public class BookingRecord implements Serializable {
     @Column(name = "status")
     private String status;
 
-    @OneToMany(mappedBy = "bookingRecord")
-    @JsonIgnore
+    @OneToMany(mappedBy = "bookingRecord",cascade = CascadeType.ALL, fetch=FetchType.EAGER)
     private Set<Passenger> bookPsrs = new HashSet<>();
 
     public Long getId() {
