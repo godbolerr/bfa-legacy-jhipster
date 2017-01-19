@@ -17,6 +17,7 @@ import com.bfa.app.domain.Passenger;
 import com.bfa.app.repository.BookingRecordRepository;
 import com.bfa.app.service.BookingRecordService;
 import com.bfa.app.service.dto.BookingRecordDTO;
+import com.bfa.app.service.dto.PassengerDTO;
 import com.bfa.app.service.mapper.BookingRecordMapper;
 
 /**
@@ -52,9 +53,7 @@ public class BookingRecordServiceImpl implements BookingRecordService {
 			pas.setFirstName(bookingRecordDTO.getPdto().getFirstName());
 			pas.setLastName(bookingRecordDTO.getPdto().getLastName());
 			pas.setGender(bookingRecordDTO.getPdto().getGender());
-			Set<Passenger> passengers = new HashSet<Passenger>();
-			passengers.add(pas);
-			bookingRecord.setBookPsrs(passengers);
+			bookingRecord.addBookPsr(pas);
 		}
 		bookingRecord = bookingRecordRepository.save(bookingRecord);
 		BookingRecordDTO result = bookingRecordMapper.bookingRecordToBookingRecordDTO(bookingRecord);
@@ -85,8 +84,23 @@ public class BookingRecordServiceImpl implements BookingRecordService {
 	@Transactional(readOnly = true)
 	public BookingRecordDTO findOne(Long id) {
 		log.debug("Request to get BookingRecord : {}", id);
+		PassengerDTO pdto = new PassengerDTO();
 		BookingRecord bookingRecord = bookingRecordRepository.findOne(id);
+		
+		if ( bookingRecord != null ) {
+			Set<Passenger> psr = bookingRecord.getBookPsrs(); 
+			if ( psr != null && psr.size() == 1 ){
+				Passenger[] pasArray = psr.toArray(new Passenger[psr.size()] );
+				pdto.setFirstName(pasArray[0].getFirstName());
+				pdto.setLastName(pasArray[0].getLastName());
+				pdto.setGender(pasArray[0].getGender());
+				
+			}
+		}
 		BookingRecordDTO bookingRecordDTO = bookingRecordMapper.bookingRecordToBookingRecordDTO(bookingRecord);
+		if ( pdto != null ) {
+			bookingRecordDTO.setPdto(pdto);
+		}
 		return bookingRecordDTO;
 	}
 

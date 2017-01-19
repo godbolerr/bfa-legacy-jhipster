@@ -106,6 +106,9 @@ public class BookingRecordResource {
     public ResponseEntity<BookingRecordDTO> getBookingRecord(@PathVariable Long id) {
         log.debug("REST request to get BookingRecord : {}", id);
         BookingRecordDTO bookingRecordDTO = bookingRecordService.findOne(id);
+        
+       
+        
         return Optional.ofNullable(bookingRecordDTO)
             .map(result -> new ResponseEntity<>(
                 result,

@@ -37,7 +37,6 @@ public class Passenger implements Serializable {
     private String gender;
 
     @ManyToOne
-    @JsonIgnore
     private BookingRecord bookingRecord;
 
 
