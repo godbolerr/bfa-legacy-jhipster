@@ -12,14 +12,14 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {})
 public interface SearchFlightMapper {
 
-    @Mapping(source = "sFlightFare.id", target = "sFlightFareId")
-    @Mapping(source = "sFlightInv.id", target = "sFlightInvId")
+//    @Mapping(source = "sFlightFare.id", target = "sFlightFareId")
+//    @Mapping(source = "sFlightInv.id", target = "sFlightInvId")
     SearchFlightDTO searchFlightToSearchFlightDTO(SearchFlight searchFlight);
 
     List<SearchFlightDTO> searchFlightsToSearchFlightDTOs(List<SearchFlight> searchFlights);
 
-    @Mapping(source = "sFlightFareId", target = "sFlightFare")
-    @Mapping(source = "sFlightInvId", target = "sFlightInv")
+  //  @Mapping(source = "sFlightFareId", target = "sFlightFare")
+  //  @Mapping(source = "sFlightInvId", target = "sFlightInv")
     SearchFlight searchFlightDTOToSearchFlight(SearchFlightDTO searchFlightDTO);
 
     List<SearchFlight> searchFlightDTOsToSearchFlights(List<SearchFlightDTO> searchFlightDTOs);
