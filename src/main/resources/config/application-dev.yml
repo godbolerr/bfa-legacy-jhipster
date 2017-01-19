@@ -49,6 +49,15 @@ spring:
     thymeleaf:
         cache: false
 
+    activemq:
+      broker-url: failover://tcp://localhost:61616
+      user: admin
+      password: admin
+      
+jms:
+  queue:
+    destination: BFA_MSG_QUEUE
+
 liquibase:
     contexts: dev
 

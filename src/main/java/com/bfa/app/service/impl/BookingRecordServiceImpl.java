@@ -1,12 +1,15 @@
 package com.bfa.app.service.impl;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,7 @@ import com.bfa.app.domain.Passenger;
 import com.bfa.app.repository.BookingRecordRepository;
 import com.bfa.app.service.BookingRecordService;
 import com.bfa.app.service.InventoryService;
+import com.bfa.app.service.JmsProducer;
 import com.bfa.app.service.dto.BookingRecordDTO;
 import com.bfa.app.service.dto.InventoryDTO;
 import com.bfa.app.service.dto.PassengerDTO;
@@ -39,7 +43,10 @@ public class BookingRecordServiceImpl implements BookingRecordService {
 	
 	@Inject
 	private InventoryService invService;
+	
 
+	@Autowired
+	JmsProducer producer;
 	/**
 	 * Save a bookingRecord.
 	 *
@@ -73,6 +80,14 @@ public class BookingRecordServiceImpl implements BookingRecordService {
 			invService.save(invDto);
 		}
 		
+		// Send message to search for updating its inventory.....
+		
+		Map<String, Object> bookingDetails = new HashMap<String, Object>();
+		bookingDetails.put("FLIGHT_NUMBER", bookingRecord.getFlightNumber());
+		bookingDetails.put("FLIGHT_DATE", bookingRecord.getFlightDate());
+		bookingDetails.put("NEW_INVENTORY", invDto.getAvailable());
+		
+		producer.send(bookingDetails.toString());
 		
 		BookingRecordDTO result = bookingRecordMapper.bookingRecordToBookingRecordDTO(bookingRecord);
 		return result;
