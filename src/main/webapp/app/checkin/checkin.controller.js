@@ -5,9 +5,9 @@
         .module('bfalegacyApp')
         .controller('CheckinController', CheckinController);
 
-    CheckinController.$inject = ['$http','Base64','$scope', 'Principal',  '$state'];
+    CheckinController.$inject = ['$rootScope','$http','Base64','$scope', 'Principal',  '$state'];
 
-    function CheckinController ($http,Base64, $scope, Principal, $state) {
+    function CheckinController ($rootScope,$http,Base64, $scope, Principal, $state) {
         var vm = this;
         vm.account = null;
         vm.isAuthenticated = null;
@@ -50,6 +50,8 @@
 						+ response.expires_in);
 				response.expires_at = expiredAt.getTime();
 				vm.bookingResponse = response;
+				$rootScope.firstName = response.pdto.firstName;
+				$rootScope.lastName = response.pdto.lastName;
 				return response;
 			}
 
@@ -62,9 +64,9 @@
     	
 			var data = {
 
-				"bookingId" :  vm.bookingResponse.bookingId,
-				"lastName":"R",
-				"firstName":"G",
+				"bookingId" :  vm.bookingInfo.bookingId,
+				"lastName":$rootScope.firstName,
+				"firstName":$rootScope.lastName,
 				"seatNumber":"28C",
 				"checkInTime":"2017-01-01",
 				"flightNumber":vm.bookingResponse.flightNumber,
