@@ -13,11 +13,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bfa.app.domain.Inventory;
 import com.bfa.app.domain.SearchFares;
 import com.bfa.app.domain.SearchFlight;
 import com.bfa.app.domain.SearchInventory;
+import com.bfa.app.repository.InventoryRepository;
 import com.bfa.app.repository.SearchFlightRepository;
+import com.bfa.app.service.InventoryService;
 import com.bfa.app.service.SearchFlightService;
+import com.bfa.app.service.dto.InventoryDTO;
 import com.bfa.app.service.dto.SearchFlightDTO;
 import com.bfa.app.service.mapper.SearchFlightMapper;
 
@@ -34,7 +38,13 @@ public class SearchFlightServiceImpl implements SearchFlightService {
 	private SearchFlightRepository searchFlightRepository;
 
 	@Inject
+	private InventoryRepository inventoryRepository;
+
+	@Inject
 	private SearchFlightMapper searchFlightMapper;
+
+	@Inject
+	private InventoryService invService;
 
 	/**
 	 * Save a searchFlight.
@@ -120,6 +130,12 @@ public class SearchFlightServiceImpl implements SearchFlightService {
 
 				searchFlightDTO.setId(searchFlight.getId());
 
+				Inventory inventory = new Inventory();
+				inventory.setFlightDate(searchFlightDTO.getFlightDate());
+				inventory.setAvailable(searchFlightDTO.getInventory().intValue());
+				inventory.setFlightNumber(searchFlightDTO.getFlightNumber());
+				inventoryRepository.save(inventory);
+
 			}
 
 		}
@@ -129,25 +145,35 @@ public class SearchFlightServiceImpl implements SearchFlightService {
 
 	@Override
 	public List<SearchFlightDTO> find(SearchFlightDTO dto) {
-		
+
 		List<SearchFlightDTO> dtoList = new ArrayList<SearchFlightDTO>();
-		
-		List<SearchFlight> sfList = searchFlightRepository.findByOriginAndDestinationAndFlightDate(dto.getOrigin(), dto.getDestination(), dto.getFlightDate());
-		
+
+		List<SearchFlight> sfList = searchFlightRepository.findByOriginAndDestinationAndFlightDate(dto.getOrigin(),
+				dto.getDestination(), dto.getFlightDate());
+
 		for (Iterator iterator = sfList.iterator(); iterator.hasNext();) {
 			SearchFlight searchFlight = (SearchFlight) iterator.next();
 			SearchFares sf = searchFlight.getSFlightFare();
 			SearchInventory si = searchFlight.getSFlightInv();
 			SearchFlightDTO searchFlightDTO = searchFlightMapper.searchFlightToSearchFlightDTO(searchFlight);
-			if ( sf != null ){
+			if (sf != null) {
 				searchFlightDTO.setFare(Long.parseLong(sf.getFare()));
 			}
-			if ( si != null ){
-				searchFlightDTO.setInventory(new Long(si.getCount()));
+
+			InventoryDTO invDto = invService.findByFlightNumberAndFlightDate(searchFlightDTO.getFlightNumber(),
+					searchFlightDTO.getFlightDate());
+
+			int availableSeats = invDto.getAvailable();
+
+			if (invDto != null) {
+				searchFlightDTO.setInventory(new Long(invDto.getAvailable()));
 			}
-			dtoList.add(searchFlightDTO);
+
+			if (availableSeats != 0) {
+				dtoList.add(searchFlightDTO);
+			}
 		}
-		
+
 		return dtoList;
 	}
 }

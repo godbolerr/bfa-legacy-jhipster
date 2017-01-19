@@ -11,5 +11,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public interface InventoryRepository extends JpaRepository<Inventory,Long> {
+	
+	Inventory findByFlightNumberAndFlightDate(String flightNumber,String flightDate);
 
 }

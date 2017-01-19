@@ -1,6 +1,6 @@
 package com.bfa.app.service.impl;
 
-import java.util.HashSet;
+import java.time.LocalDate;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -16,7 +16,9 @@ import com.bfa.app.domain.BookingRecord;
 import com.bfa.app.domain.Passenger;
 import com.bfa.app.repository.BookingRecordRepository;
 import com.bfa.app.service.BookingRecordService;
+import com.bfa.app.service.InventoryService;
 import com.bfa.app.service.dto.BookingRecordDTO;
+import com.bfa.app.service.dto.InventoryDTO;
 import com.bfa.app.service.dto.PassengerDTO;
 import com.bfa.app.service.mapper.BookingRecordMapper;
 
@@ -34,6 +36,9 @@ public class BookingRecordServiceImpl implements BookingRecordService {
 
 	@Inject
 	private BookingRecordMapper bookingRecordMapper;
+	
+	@Inject
+	private InventoryService invService;
 
 	/**
 	 * Save a bookingRecord.
@@ -55,7 +60,20 @@ public class BookingRecordServiceImpl implements BookingRecordService {
 			pas.setGender(bookingRecordDTO.getPdto().getGender());
 			bookingRecord.addBookPsr(pas);
 		}
+		
+		bookingRecord.setBookingDate(LocalDate.now());
 		bookingRecord = bookingRecordRepository.save(bookingRecord);
+		
+		// Less 1 for the inventory.
+		
+		InventoryDTO invDto = invService.findByFlightNumberAndFlightDate(bookingRecord.getFlightNumber(), bookingRecord.getFlightDate());
+		
+		if ( invDto != null ) {
+			invDto.setAvailable(invDto.getAvailable() - 1);
+			invService.save(invDto);
+		}
+		
+		
 		BookingRecordDTO result = bookingRecordMapper.bookingRecordToBookingRecordDTO(bookingRecord);
 		return result;
 	}

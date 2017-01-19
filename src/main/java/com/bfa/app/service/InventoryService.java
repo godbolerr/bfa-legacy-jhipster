@@ -1,7 +1,8 @@
 package com.bfa.app.service;
 
-import com.bfa.app.service.dto.InventoryDTO;
 import java.util.List;
+
+import com.bfa.app.service.dto.InventoryDTO;
 
 /**
  * Service Interface for managing Inventory.
@@ -23,6 +24,7 @@ public interface InventoryService {
      */
     List<InventoryDTO> findAll();
 
+    
     /**
      *  Get the "id" inventory.
      *
@@ -37,4 +39,9 @@ public interface InventoryService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+    
+    
+    
+    InventoryDTO findByFlightNumberAndFlightDate(String flightNumber,String flightDate);
+    
 }

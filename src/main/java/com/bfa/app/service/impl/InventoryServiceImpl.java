@@ -82,4 +82,11 @@ public class InventoryServiceImpl implements InventoryService{
         log.debug("Request to delete Inventory : {}", id);
         inventoryRepository.delete(id);
     }
+
+	@Override
+	public InventoryDTO findByFlightNumberAndFlightDate(String flightNumber, String flightDate) {
+        Inventory inventory = inventoryRepository.findByFlightNumberAndFlightDate(flightNumber, flightDate);
+        InventoryDTO inventoryDTO = inventoryMapper.inventoryToInventoryDTO(inventory);
+        return inventoryDTO;
+	}
 }
