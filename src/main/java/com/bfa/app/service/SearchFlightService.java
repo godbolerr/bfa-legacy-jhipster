@@ -25,6 +25,14 @@ public interface SearchFlightService {
      *  @return the list of entities
      */
     List<SearchFlightDTO> findAll();
+    
+    
+    /**
+     * Find flights based on criterion as populated in DTO
+     * @param dto
+     * @return
+     */
+    List<SearchFlightDTO> find(SearchFlightDTO dto);
 
     /**
      *  Get the "id" searchFlight.

@@ -65,10 +65,10 @@
             <tbody>
             <tr ng-repeat="flightInfo in vm.flights">
                 <td>{{flightInfo.flightNumber}}</td>
-                <td>{{flightInfo.finv.count}}</td>
+                <td>{{flightInfo.inventory}}</td>
                 <td>{{flightInfo.flightDate}}</td>
-                <td>{{flightInfo.ffare.fare}}</td>
-                <td><a href="" ng-click="vm.bookFlight(flightInfo.origin,flightInfo.destination,flightInfo.flightNumber,flightInfo.flightDate,flightInfo.ffare.fare)">Book</a></td>
+                <td>{{flightInfo.fare}}</td>
+                <td><a href="" ng-click="vm.bookFlight(flightInfo.origin,flightInfo.destination,flightInfo.flightNumber,flightInfo.flightDate,flightInfo.fare)">Book</a></td>
             </tr>
             </tbody>
         </table>

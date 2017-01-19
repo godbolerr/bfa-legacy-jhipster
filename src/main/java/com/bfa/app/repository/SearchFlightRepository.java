@@ -12,4 +12,5 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface SearchFlightRepository extends JpaRepository<SearchFlight,Long> {
 
+	List<SearchFlight> findByOriginAndDestinationAndFlightDate(String origin,String dest,String flightDate);
 }

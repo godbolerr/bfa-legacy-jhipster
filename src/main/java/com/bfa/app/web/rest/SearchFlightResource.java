@@ -52,6 +52,15 @@ public class SearchFlightResource {
             .body(result);
     }
 
+    
+    @PostMapping("/searchFlights")
+    @Timed
+    public List<SearchFlightDTO> searchFlights(@RequestBody SearchFlightDTO searchFlightDTO) throws URISyntaxException {
+        log.debug("REST request SearchFlight : {}", searchFlightDTO);
+        return searchFlightService.find(searchFlightDTO);
+    }   
+    
+    
     /**
      * PUT  /search-flights : Updates an existing searchFlight.
      *

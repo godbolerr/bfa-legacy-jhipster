@@ -1,23 +1,25 @@
 package com.bfa.app.service.impl;
 
-import com.bfa.app.service.SearchFlightService;
-import com.bfa.app.domain.SearchFares;
-import com.bfa.app.domain.SearchFlight;
-import com.bfa.app.domain.SearchInventory;
-import com.bfa.app.repository.SearchFlightRepository;
-import com.bfa.app.service.dto.SearchFlightDTO;
-import com.bfa.app.service.mapper.SearchFlightMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.bfa.app.domain.SearchFares;
+import com.bfa.app.domain.SearchFlight;
+import com.bfa.app.domain.SearchInventory;
+import com.bfa.app.repository.SearchFlightRepository;
+import com.bfa.app.service.SearchFlightService;
+import com.bfa.app.service.dto.SearchFlightDTO;
+import com.bfa.app.service.mapper.SearchFlightMapper;
 
 /**
  * Service Implementation for managing SearchFlight.
@@ -123,5 +125,29 @@ public class SearchFlightServiceImpl implements SearchFlightService {
 		}
 
 		return flights;
+	}
+
+	@Override
+	public List<SearchFlightDTO> find(SearchFlightDTO dto) {
+		
+		List<SearchFlightDTO> dtoList = new ArrayList<SearchFlightDTO>();
+		
+		List<SearchFlight> sfList = searchFlightRepository.findByOriginAndDestinationAndFlightDate(dto.getOrigin(), dto.getDestination(), dto.getFlightDate());
+		
+		for (Iterator iterator = sfList.iterator(); iterator.hasNext();) {
+			SearchFlight searchFlight = (SearchFlight) iterator.next();
+			SearchFares sf = searchFlight.getSFlightFare();
+			SearchInventory si = searchFlight.getSFlightInv();
+			SearchFlightDTO searchFlightDTO = searchFlightMapper.searchFlightToSearchFlightDTO(searchFlight);
+			if ( sf != null ){
+				searchFlightDTO.setFare(Long.parseLong(sf.getFare()));
+			}
+			if ( si != null ){
+				searchFlightDTO.setInventory(new Long(si.getCount()));
+			}
+			dtoList.add(searchFlightDTO);
+		}
+		
+		return dtoList;
 	}
 }
