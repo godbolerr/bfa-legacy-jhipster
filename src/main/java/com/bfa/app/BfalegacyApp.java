@@ -1,25 +1,31 @@
 package com.bfa.app;
 
-import com.bfa.app.config.Constants;
-import com.bfa.app.config.DefaultProfileUtil;
-import com.bfa.app.config.JHipsterProperties;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.*;
+import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Collection;
+import com.bfa.app.config.Constants;
+import com.bfa.app.config.DefaultProfileUtil;
+import com.bfa.app.config.JHipsterProperties;
+import com.bfa.app.service.SearchFlightService;
+import com.bfa.app.service.dto.SearchFlightDTO;
 
 @ComponentScan
 @EnableAutoConfiguration(exclude = { MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class })
@@ -30,6 +36,9 @@ public class BfalegacyApp {
 
     @Inject
     private Environment env;
+    
+    @Inject
+    private SearchFlightService searchFlightService;
 
     /**
      * Initializes bfalegacy.
@@ -50,6 +59,24 @@ public class BfalegacyApp {
             log.error("You have misconfigured your application! It should not" +
                 "run with both the 'dev' and 'cloud' profiles at the same time.");
         }
+        
+        // Initialize flight database 
+        
+        
+        List<SearchFlightDTO> flights = new ArrayList<SearchFlightDTO>();
+        SearchFlightDTO sfdto = new SearchFlightDTO();
+        
+        sfdto.setOrigin("NYC");
+        sfdto.setDestination("SFO");
+        sfdto.setFare(121L);
+        sfdto.setFlightDate("2017-01-01");
+        sfdto.setInventory(100L);
+        sfdto.setFlightNumber("SF121");
+        
+        flights.add(sfdto);
+        
+		searchFlightService.init(flights);
+        
     }
 
     /**
@@ -72,4 +99,7 @@ public class BfalegacyApp {
             env.getProperty("server.port"));
 
     }
+    
+    
+ 
 }
