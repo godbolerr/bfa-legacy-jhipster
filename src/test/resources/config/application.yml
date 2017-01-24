@@ -44,6 +44,10 @@ spring:
             enabled: false
     thymeleaf:
         mode: XHTML
+        
+jms:
+  queue:
+    destination: BFA_MSG_QUEUE        
 
 liquibase:
     contexts: test
@@ -55,7 +59,7 @@ security:
 server:
     port: 10344
     address: localhost
-
+    
 # ===================================================================
 # JHipster specific properties
 # ===================================================================
@@ -81,3 +85,7 @@ jhipster:
         contactEmail:
         license:
         licenseUrl:
+oauth:
+        token: http://localhost:11000/uaa/oauth/token
+    
+    

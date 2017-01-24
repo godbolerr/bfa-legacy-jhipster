@@ -63,6 +63,10 @@ liquibase:
 
 server:
     port: 8080
+    
+oauth:
+        token: http://localhost:11000/uaa/oauth/token
+            
 
 # ===================================================================
 # JHipster specific properties

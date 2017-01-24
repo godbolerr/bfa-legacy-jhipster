@@ -81,3 +81,5 @@ jhipster:
     ribbon:
         # comma separated list of profiles to show a ribbon on the GUI
         displayOnActiveProfiles: dev
+oauth:
+    token: http://localhost:11000/uaa/oauth/token
